@@ -48,6 +48,23 @@ class Bounties
       db.close
     end
 
+    def self.update_by_id(name, favourite_weapon, bounty_value, cashed_in, id)
+      db = PG.connect( {dbname: 'bounties_database', host: 'localhost'} )
+      sql = "UPDATE bounties_table SET (
+      name,
+      favourite_weapon,
+      bounty_value,
+      cashed_in
+      ) = (
+      $1, $2, $3, $4
+      )
+      WHERE id = $5"
+      values = [name, favourite_weapon, bounty_value, cashed_in, id]
+      db.prepare("update", sql)
+      db.exec_prepared("update", values)
+      db.close
+    end
+
     def self.delete_by_id(id)
       db = PG.connect( { dbname: 'bounties_database', host: 'localhost'} )
       sql = "DELETE FROM bounties_table WHERE id = $1"
